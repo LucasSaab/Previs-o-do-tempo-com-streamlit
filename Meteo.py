@@ -16,36 +16,9 @@ st.markdown(
         background: linear-gradient(180deg, #eef5ff 0%, #f7fbff 35%, #ffffff 100%);
     }
 
-    /* Sidebar com leve destaque */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1e3a5f 0%, #2c5282 100%);
-    }
-    section[data-testid="stSidebar"] * {
-        color: #f0f5fa !important;
-    }
-    section[data-testid="stSidebar"] input {
-        color: #1a1a1a !important;
-        background-color: #ffffff !important;
-        border-radius: 8px !important;
-    }
-    section[data-testid="stSidebar"] .stButton button {
-        border-radius: 10px;
-        font-weight: 600;
-        border: none;
-        background: linear-gradient(90deg, #4facfe 0%, #00c6fb 100%);
-        color: #ffffff !important;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    section[data-testid="stSidebar"] .stButton button:hover {
-        transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
-
-    /* Slider na sidebar */
-    section[data-testid="stSidebar"] [data-baseweb="slider"] {
-        padding-top: 4px;
-    }
-
+    
     /* Título principal */
     h1 {
         font-weight: 800 !important;
@@ -57,8 +30,11 @@ st.markdown(
 
     /* Subtítulos com pequena borda esquerda colorida */
     h2, h3 {
+        font-size: 50px !important;
+        text-align: center;
         color: #1e3a5f !important;
         border-left: 5px solid #4facfe;
+        border-right: 5px solid #4facfe;
         padding-left: 12px;
         margin-top: 1.2rem !important;
     }
@@ -178,18 +154,23 @@ def buscar_previsao(lat: float, lon: float, dias: int, unidade_temp: str):
 def card_metrica(col, titulo, valor, ajuda=""):
     col.metric(titulo, valor, help=ajuda)
 
-st.sidebar.title("Consultar cidade")
 
-cidade_input = st.sidebar.text_input("Cidade", value="Londrina")
+st.header("Previsão do tempo com OpenWeatherMap")
 
+col1, col2 = st.columns(2)
+flex_box1 = st.container(vertical_alignment="center",horizontal_alignment="distribute")
 unidade_temp = "Celsius (°C)"
 
-dias_previsao = st.sidebar.slider("Dias de previsão", min_value=1, max_value=14, value=7)
+with col1:
+    st.title("🌤️ Monitor de Clima")
+    st.write("Consulte o clima atual e a previsão para qualquer cidade do mundo, em tempo real.")
 
-buscar = st.sidebar.button("🔍 Buscar clima", type="primary", use_container_width=True)
+with col2:
+    cidade_input = st.text_input("Informe a cidade voce deseja saber a previsão", value="Londrina")
+    dias_previsao = st.slider("Dias de previsão futura", min_value=1, max_value=14, value=7)
 
-st.title("🌤️ Monitor de Clima")
-st.write("Consulte o clima atual e a previsão para qualquer cidade do mundo, em tempo real.")
+buscar = st.button("🔍 Buscar clima", type="primary", use_container_width=True)
+
 
 if "cidade_selecionada" not in st.session_state:
     st.session_state.cidade_selecionada = None
@@ -237,7 +218,7 @@ if buscar or cidade_input:
     codigo_atual = atual.get("weather_code", 0)
     descricao, emoji = descrever_clima(codigo_atual)
 
-    st.subheader(f"{emoji} Agora em {cidade_escolhida['name']}")
+    st.subheader(f"{emoji} Agora em {cidade_escolhida['name']}, {cidade_escolhida['country']}")
     st.caption(descricao)
 
     col1, col2, col3, col4 = st.columns(4)
